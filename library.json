@@ -1,0 +1,48 @@
+{
+    "name": "MemoryCore",
+    "version": "0.1.0",
+    "description": "A lightweight and reusable Winbond W25Qxx SPI Flash library for STM32 and Arduino-compatible platforms.",
+    "keywords": [
+        "flash",
+        "spi",
+        "memory",
+        "w25q16",
+        "w25q32",
+        "w25q64",
+        "w25q128",
+        "winbond",
+        "stm32",
+        "storage"
+    ],
+    "repository":
+    {
+        "type": "git",
+        "url": "https://github.com/Pooria-nek/MemoryCore.git"
+    },
+    "authors":
+    [
+        {
+            "name": "Pooria",
+            "maintainer": true
+        }
+    ],
+    "license": "GPL-3.0",
+    "frameworks": [
+        "arduino"
+    ],
+    "platforms": [
+        "ststm32",
+        "atmelavr",
+        "espressif32",
+        "espressif8266",
+        "raspberrypi"
+    ],
+    "headers": [
+        "MemoryCore.h"
+    ],
+    "dependencies": [],
+    "build":
+    {
+        "includeDir": "src"
+    }
+}
