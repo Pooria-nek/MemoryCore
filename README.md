@@ -46,7 +46,7 @@ Add the library to your `platformio.ini`:
 
 ```ini
 lib_deps =
-    YOUR_USERNAME/MemoryCore
+    Pooria-nek/MemoryCore
 ```
 
 Or install it from the PlatformIO Library Registry.
