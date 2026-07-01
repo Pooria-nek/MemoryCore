@@ -1,10 +1,7 @@
 #include "SPIBus.h"
 
-namespace MC
-{
-
 SPIBus::SPIBus(
-    SPIClass& spi,
+    SPIClass &spi,
     uint8_t chipSelectPin)
     : _spi(spi),
       _csPin(chipSelectPin),
@@ -41,8 +38,8 @@ uint8_t SPIBus::transfer(uint8_t data)
 }
 
 void SPIBus::transfer(
-    const uint8_t* txBuffer,
-    uint8_t* rxBuffer,
+    const uint8_t *txBuffer,
+    uint8_t *rxBuffer,
     size_t length)
 {
     for (size_t i = 0; i < length; i++)
@@ -58,7 +55,7 @@ void SPIBus::transfer(
 }
 
 void SPIBus::write(
-    const uint8_t* data,
+    const uint8_t *data,
     size_t length)
 {
     while (length--)
@@ -68,7 +65,7 @@ void SPIBus::write(
 }
 
 void SPIBus::read(
-    uint8_t* data,
+    uint8_t *data,
     size_t length,
     uint8_t filler)
 {
@@ -77,5 +74,3 @@ void SPIBus::read(
         *data++ = _spi.transfer(filler);
     }
 }
-
-} // namespace MemoryCore

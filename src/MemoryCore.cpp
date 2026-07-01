@@ -1,10 +1,6 @@
 #include "MemoryCore.h"
 
-#include "FlashConfig.h"
-
-using namespace MC;
-
-MC::MemoryCore::MemoryCore(
+MemoryCore::MemoryCore(
     SPIClass &spi,
     uint8_t chipSelectPin)
     : _spi(spi, chipSelectPin),
@@ -12,7 +8,7 @@ MC::MemoryCore::MemoryCore(
 {
 }
 
-bool MC::MemoryCore::begin()
+bool MemoryCore::begin()
 {
     _spi.begin();
 
@@ -24,37 +20,37 @@ bool MC::MemoryCore::begin()
     return true;
 }
 
-JEDECID MC::MemoryCore::jedecID()
+JEDECID MemoryCore::jedecID()
 {
     return _jedec;
 }
 
-uint64_t MC::MemoryCore::uniqueID()
+uint64_t MemoryCore::uniqueID()
 {
     return _flash.readUniqueID();
 }
 
-uint32_t MC::MemoryCore::capacity() const
+uint32_t MemoryCore::capacity() const
 {
     return _flash.geometry().capacityBytes;
 }
 
-uint32_t MC::MemoryCore::pageSize() const
+uint32_t MemoryCore::pageSize() const
 {
     return _flash.geometry().pageSize;
 }
 
-uint32_t MC::MemoryCore::sectorSize() const
+uint32_t MemoryCore::sectorSize() const
 {
     return _flash.geometry().sectorSize;
 }
 
-bool MC::MemoryCore::busy()
+bool MemoryCore::busy()
 {
     return _flash.busy();
 }
 
-bool MC::MemoryCore::validRange(
+bool MemoryCore::validRange(
     uint32_t address,
     uint32_t length)
 {
@@ -71,7 +67,7 @@ bool MC::MemoryCore::validRange(
     return true;
 }
 
-bool MC::MemoryCore::read(
+bool MemoryCore::read(
     uint32_t address,
     void *buffer,
     uint32_t length)
@@ -84,7 +80,7 @@ bool MC::MemoryCore::read(
     return true;
 }
 
-bool MC::MemoryCore::write(
+bool MemoryCore::write(
     uint32_t address,
     const void *data,
     uint32_t length)
@@ -119,14 +115,14 @@ bool MC::MemoryCore::write(
     return true;
 }
 
-bool MC::MemoryCore::writeByte(
+bool MemoryCore::writeByte(
     uint32_t address,
     uint8_t value)
 {
     return write(address, &value, 1);
 }
 
-uint8_t MC::MemoryCore::readByte(
+uint8_t MemoryCore::readByte(
     uint32_t address)
 {
     uint8_t value = 0xFF;
@@ -136,7 +132,90 @@ uint8_t MC::MemoryCore::readByte(
     return value;
 }
 
-bool MC::MemoryCore::eraseSector(
+bool MemoryCore::update(
+    uint32_t address,
+    const void *data,
+    uint32_t length)
+{
+    if (!validRange(address, length))
+        return false;
+
+    const uint8_t *src = static_cast<const uint8_t *>(data);
+
+    while (length)
+    {
+        uint32_t sector = address / W25Q_FLASH_SECTOR_SIZE;
+        uint32_t sectorAddress = sector * W25Q_FLASH_SECTOR_SIZE;
+
+        uint32_t offset = address - sectorAddress;
+
+        uint32_t chunk = W25Q_FLASH_SECTOR_SIZE - offset;
+
+        if (chunk > length)
+            chunk = length;
+
+        // Read whole sector
+        if (!read(sectorAddress, _sectorBuffer, W25Q_FLASH_SECTOR_SIZE))
+            return false;
+
+        uint8_t *oldData = &_sectorBuffer[offset];
+
+        // Already identical
+        if (memcmp(oldData, src, chunk) == 0)
+        {
+            address += chunk;
+            src += chunk;
+            length -= chunk;
+            continue;
+        }
+
+        // Can program directly (1 -> 0 only)
+        if (!requiresErase(oldData, src, chunk))
+        {
+            if (!write(address, src, chunk))
+                return false;
+        }
+        else
+        {
+            // Modify RAM copy
+            memcpy(oldData, src, chunk);
+
+            // Erase sector
+            if (!eraseSector(sector))
+                return false;
+
+            // Rewrite sector
+            if (!write(sectorAddress, _sectorBuffer, W25Q_FLASH_SECTOR_SIZE))
+                return false;
+        }
+
+        address += chunk;
+        src += chunk;
+        length -= chunk;
+    }
+
+    return true;
+}
+
+bool MemoryCore::requiresErase(
+    const uint8_t *oldData,
+    const uint8_t *newData,
+    uint32_t length)
+{
+    while (length--)
+    {
+        // If any bit must change from 0 -> 1, an erase is required.
+        if (((~(*oldData)) & (*newData)) != 0)
+            return true;
+
+        oldData++;
+        newData++;
+    }
+
+    return false;
+}
+
+bool MemoryCore::eraseSector(
     uint32_t sector)
 {
     uint32_t address =
@@ -150,7 +229,7 @@ bool MC::MemoryCore::eraseSector(
     return true;
 }
 
-bool MC::MemoryCore::eraseBlock32K(
+bool MemoryCore::eraseBlock32K(
     uint32_t block)
 {
     uint32_t address =
@@ -164,7 +243,7 @@ bool MC::MemoryCore::eraseBlock32K(
     return true;
 }
 
-bool MC::MemoryCore::eraseBlock64K(
+bool MemoryCore::eraseBlock64K(
     uint32_t block)
 {
     uint32_t address =
@@ -178,7 +257,7 @@ bool MC::MemoryCore::eraseBlock64K(
     return true;
 }
 
-bool MC::MemoryCore::eraseChip()
+bool MemoryCore::eraseChip()
 {
     _flash.eraseChip();
     return true;
