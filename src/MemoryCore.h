@@ -1,25 +1,39 @@
+#ifndef MEMORYCORE_MEMORYCORE_H
+#define MEMORYCORE_MEMORYCORE_H
+
+#include <Arduino.h>
+#include <SPI.h>
+
+#include "SPIBus.h"
+#include "FlashDevice.h"
+
+namespace MemoryCore
+{
+
 class MemoryCore
 {
 public:
+    MemoryCore(SPIClass& spi, uint8_t chipSelectPin);
 
     bool begin();
 
-    bool eraseChip();
+    // Information
+    uint32_t capacity() const;
+    uint32_t pageSize() const;
+    uint32_t sectorSize() const;
 
-    bool eraseSector(uint32_t sector);
+    JEDECID jedecID();
+    uint64_t uniqueID();
 
-    bool eraseBlock32K(uint32_t block);
-
-    bool eraseBlock64K(uint32_t block);
+    // Read / Write
+    bool read(
+        uint32_t address,
+        void* buffer,
+        uint32_t length);
 
     bool write(
         uint32_t address,
         const void* data,
-        uint32_t length);
-
-    bool read(
-        uint32_t address,
-        void* data,
         uint32_t length);
 
     bool writeByte(
@@ -29,30 +43,39 @@ public:
     uint8_t readByte(
         uint32_t address);
 
-    bool writeStruct(
-        uint32_t address,
-        const void* object,
-        uint32_t size);
+    template<typename T>
+    bool writeObject(uint32_t address, const T& object)
+    {
+        return write(address, &object, sizeof(T));
+    }
 
-    bool readStruct(
-        uint32_t address,
-        void* object,
-        uint32_t size);
+    template<typename T>
+    bool readObject(uint32_t address, T& object)
+    {
+        return read(address, &object, sizeof(T));
+    }
 
-    uint32_t capacity();
+    // Erase
+    bool eraseSector(uint32_t sector);
 
-    uint16_t pageSize();
+    bool eraseBlock32K(uint32_t block);
 
-    uint32_t sectorSize();
+    bool eraseBlock64K(uint32_t block);
 
-    uint32_t blockSize();
+    bool eraseChip();
 
+    // Status
     bool busy();
 
-    void waitBusy();
+private:
+    SPIBus _spi;
+    FlashDevice _flash;
 
-    uint32_t uniqueID();
+    JEDECID _jedec;
 
-    uint32_t jedecID();
-
+    bool validRange(uint32_t address, uint32_t length);
 };
+
+}
+
+#endif
