@@ -2,17 +2,17 @@
 
 #include "FlashConfig.h"
 
-using namespace MemoryCore;
+using namespace MC;
 
-MemoryCore::MemoryCore(
-    SPIClass& spi,
+MC::MemoryCore::MemoryCore(
+    SPIClass &spi,
     uint8_t chipSelectPin)
     : _spi(spi, chipSelectPin),
       _flash(_spi)
 {
 }
 
-bool MemoryCore::begin()
+bool MC::MemoryCore::begin()
 {
     _spi.begin();
 
@@ -24,37 +24,37 @@ bool MemoryCore::begin()
     return true;
 }
 
-JEDECID MemoryCore::jedecID()
+JEDECID MC::MemoryCore::jedecID()
 {
     return _jedec;
 }
 
-uint64_t MemoryCore::uniqueID()
+uint64_t MC::MemoryCore::uniqueID()
 {
     return _flash.readUniqueID();
 }
 
-uint32_t MemoryCore::capacity() const
+uint32_t MC::MemoryCore::capacity() const
 {
     return _flash.geometry().capacityBytes;
 }
 
-uint32_t MemoryCore::pageSize() const
+uint32_t MC::MemoryCore::pageSize() const
 {
     return _flash.geometry().pageSize;
 }
 
-uint32_t MemoryCore::sectorSize() const
+uint32_t MC::MemoryCore::sectorSize() const
 {
     return _flash.geometry().sectorSize;
 }
 
-bool MemoryCore::busy()
+bool MC::MemoryCore::busy()
 {
     return _flash.busy();
 }
 
-bool MemoryCore::validRange(
+bool MC::MemoryCore::validRange(
     uint32_t address,
     uint32_t length)
 {
@@ -71,9 +71,9 @@ bool MemoryCore::validRange(
     return true;
 }
 
-bool MemoryCore::read(
+bool MC::MemoryCore::read(
     uint32_t address,
-    void* buffer,
+    void *buffer,
     uint32_t length)
 {
     if (!validRange(address, length))
@@ -84,16 +84,16 @@ bool MemoryCore::read(
     return true;
 }
 
-bool MemoryCore::write(
+bool MC::MemoryCore::write(
     uint32_t address,
-    const void* data,
+    const void *data,
     uint32_t length)
 {
     if (!validRange(address, length))
         return false;
 
-    const uint8_t* src =
-        static_cast<const uint8_t*>(data);
+    const uint8_t *src =
+        static_cast<const uint8_t *>(data);
 
     while (length)
     {
@@ -119,14 +119,14 @@ bool MemoryCore::write(
     return true;
 }
 
-bool MemoryCore::writeByte(
+bool MC::MemoryCore::writeByte(
     uint32_t address,
     uint8_t value)
 {
     return write(address, &value, 1);
 }
 
-uint8_t MemoryCore::readByte(
+uint8_t MC::MemoryCore::readByte(
     uint32_t address)
 {
     uint8_t value = 0xFF;
@@ -136,11 +136,11 @@ uint8_t MemoryCore::readByte(
     return value;
 }
 
-bool MemoryCore::eraseSector(
+bool MC::MemoryCore::eraseSector(
     uint32_t sector)
 {
     uint32_t address =
-        sector * FLASH_SECTOR_SIZE;
+        sector * W25Q_FLASH_SECTOR_SIZE;
 
     if (address >= capacity())
         return false;
@@ -150,11 +150,11 @@ bool MemoryCore::eraseSector(
     return true;
 }
 
-bool MemoryCore::eraseBlock32K(
+bool MC::MemoryCore::eraseBlock32K(
     uint32_t block)
 {
     uint32_t address =
-        block * FLASH_BLOCK32_SIZE;
+        block * W25Q_FLASH_BLOCK32_SIZE;
 
     if (address >= capacity())
         return false;
@@ -164,11 +164,11 @@ bool MemoryCore::eraseBlock32K(
     return true;
 }
 
-bool MemoryCore::eraseBlock64K(
+bool MC::MemoryCore::eraseBlock64K(
     uint32_t block)
 {
     uint32_t address =
-        block * FLASH_BLOCK64_SIZE;
+        block * W25Q_FLASH_BLOCK64_SIZE;
 
     if (address >= capacity())
         return false;
@@ -178,7 +178,7 @@ bool MemoryCore::eraseBlock64K(
     return true;
 }
 
-bool MemoryCore::eraseChip()
+bool MC::MemoryCore::eraseChip()
 {
     _flash.eraseChip();
     return true;

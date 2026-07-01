@@ -40,15 +40,15 @@
 #endif
 
 // Page size (bytes)
-constexpr uint16_t FLASH_PAGE_SIZE = 256;
+constexpr uint16_t W25Q_FLASH_PAGE_SIZE = 256;
 
 // Sector size (bytes)
-constexpr uint32_t FLASH_SECTOR_SIZE = 4096;
+constexpr uint32_t W25Q_FLASH_SECTOR_SIZE = 4096;
 
 // 32 KB block size
-constexpr uint32_t FLASH_BLOCK32_SIZE = 32768;
+constexpr uint32_t W25Q_FLASH_BLOCK32_SIZE = 32768;
 
 // 64 KB block size
-constexpr uint32_t FLASH_BLOCK64_SIZE = 65536;
+constexpr uint32_t W25Q_FLASH_BLOCK64_SIZE = 65536;
 
 #endif // MEMORYCORE_FLASHCONFIG_H

@@ -1,6 +1,6 @@
 #include "SPIBus.h"
 
-namespace MemoryCore
+namespace MC
 {
 
 SPIBus::SPIBus(

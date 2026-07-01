@@ -6,45 +6,45 @@
 
 #include "FlashConfig.h"
 
-namespace MemoryCore
+namespace MC
 {
 
-class SPIBus
-{
-public:
-    SPIBus(
-        SPIClass& spi,
-        uint8_t chipSelectPin);
+    class SPIBus
+    {
+    public:
+        SPIBus(
+            SPIClass &spi,
+            uint8_t chipSelectPin);
 
-    void begin();
+        void begin();
 
-    void beginTransaction();
+        void beginTransaction();
 
-    void endTransaction();
+        void endTransaction();
 
-    uint8_t transfer(uint8_t data);
+        uint8_t transfer(uint8_t data);
 
-    void transfer(
-        const uint8_t* txBuffer,
-        uint8_t* rxBuffer,
-        size_t length);
+        void transfer(
+            const uint8_t *txBuffer,
+            uint8_t *rxBuffer,
+            size_t length);
 
-    void write(
-        const uint8_t* data,
-        size_t length);
+        void write(
+            const uint8_t *data,
+            size_t length);
 
-    void read(
-        uint8_t* data,
-        size_t length,
-        uint8_t filler = 0xFF);
+        void read(
+            uint8_t *data,
+            size_t length,
+            uint8_t filler = 0xFF);
 
-private:
-    SPIClass& _spi;
+    private:
+        SPIClass &_spi;
 
-    uint8_t _csPin;
+        uint8_t _csPin;
 
-    SPISettings _settings;
-};
+        SPISettings _settings;
+    };
 
 } // namespace MemoryCore
 

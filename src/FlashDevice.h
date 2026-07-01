@@ -6,94 +6,93 @@
 #include "SPIBus.h"
 #include "JEDEC.h"
 
-namespace MemoryCore
+namespace MC
 {
 
-class FlashDevice
-{
-public:
-    explicit FlashDevice(SPIBus& spi);
+    class FlashDevice
+    {
+    public:
+        explicit FlashDevice(SPIBus &spi);
 
-    bool begin();
+        bool begin();
 
-    //-------------------------------------------------------------------------
-    // Identification
-    //-------------------------------------------------------------------------
+        //-------------------------------------------------------------------------
+        // Identification
+        //-------------------------------------------------------------------------
 
-    JEDECID readJEDECID();
+        JEDECID readJEDECID();
 
-    uint64_t readUniqueID();
+        uint64_t readUniqueID();
 
-    const FlashGeometry& geometry() const;
+        const FlashGeometry &geometry() const;
 
-    //-------------------------------------------------------------------------
-    // Status
-    //-------------------------------------------------------------------------
+        //-------------------------------------------------------------------------
+        // Status
+        //-------------------------------------------------------------------------
 
-    uint8_t readStatus1();
+        uint8_t readStatus1();
 
-    uint8_t readStatus2();
+        uint8_t readStatus2();
 
-    uint8_t readStatus3();
+        uint8_t readStatus3();
 
-    bool busy();
+        bool busy();
 
-    void waitWhileBusy();
+        void waitWhileBusy();
 
-    //-------------------------------------------------------------------------
-    // Power
-    //-------------------------------------------------------------------------
+        //-------------------------------------------------------------------------
+        // Power
+        //-------------------------------------------------------------------------
 
-    void reset();
+        void reset();
 
-    void powerDown();
+        void powerDown();
 
-    void wakeUp();
+        void wakeUp();
 
-    //-------------------------------------------------------------------------
-    // Write Control
-    //-------------------------------------------------------------------------
+        //-------------------------------------------------------------------------
+        // Write Control
+        //-------------------------------------------------------------------------
 
-    void writeEnable();
+        void writeEnable();
 
-    void writeDisable();
+        void writeDisable();
 
-    //-------------------------------------------------------------------------
-    // Read / Write
-    //-------------------------------------------------------------------------
+        //-------------------------------------------------------------------------
+        // Read / Write
+        //-------------------------------------------------------------------------
 
-    void read(
-        uint32_t address,
-        void* buffer,
-        uint32_t length);
+        void read(
+            uint32_t address,
+            void *buffer,
+            uint32_t length);
 
-    void pageProgram(
-        uint32_t address,
-        const void* data,
-        uint16_t length);
+        void pageProgram(
+            uint32_t address,
+            const void *data,
+            uint16_t length);
 
-    //-------------------------------------------------------------------------
-    // Erase
-    //-------------------------------------------------------------------------
+        //-------------------------------------------------------------------------
+        // Erase
+        //-------------------------------------------------------------------------
 
-    void eraseSector(uint32_t address);
+        void eraseSector(uint32_t address);
 
-    void eraseBlock32K(uint32_t address);
+        void eraseBlock32K(uint32_t address);
 
-    void eraseBlock64K(uint32_t address);
+        void eraseBlock64K(uint32_t address);
 
-    void eraseChip();
+        void eraseChip();
 
-private:
+    private:
+        SPIBus &_spi;
 
-    SPIBus& _spi;
+        FlashGeometry _geometry;
 
-    FlashGeometry _geometry;
+        void sendAddress(uint32_t address);
 
-    void sendAddress(uint32_t address);
-
-    void detectGeometry(const JEDECID& id);
-};
+        void detectGeometry(const JEDECID &id);
+    };
 
 }
 

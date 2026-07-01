@@ -4,9 +4,9 @@
 #include "FlashStatus.h"
 #include "FlashConfig.h"
 
-using namespace MemoryCore;
+using namespace MC;
 
-FlashDevice::FlashDevice(SPIBus& spi)
+FlashDevice::FlashDevice(SPIBus &spi)
     : _spi(spi)
 {
     memset(&_geometry, 0, sizeof(_geometry));
@@ -35,8 +35,8 @@ JEDECID FlashDevice::readJEDECID()
     _spi.transfer(Command::ReadJEDECID);
 
     id.manufacturer = _spi.transfer(0xFF);
-    id.memoryType   = _spi.transfer(0xFF);
-    id.capacity     = _spi.transfer(0xFF);
+    id.memoryType = _spi.transfer(0xFF);
+    id.capacity = _spi.transfer(0xFF);
 
     _spi.endTransaction();
 
@@ -55,7 +55,7 @@ uint64_t FlashDevice::readUniqueID()
         _spi.transfer(0x00);
 
     for (int i = 7; i >= 0; i--)
-        ((uint8_t*)&uid)[i] = _spi.transfer(0xFF);
+        ((uint8_t *)&uid)[i] = _spi.transfer(0xFF);
 
     _spi.endTransaction();
 
@@ -132,7 +132,7 @@ void FlashDevice::writeDisable()
 
 void FlashDevice::read(
     uint32_t address,
-    void* buffer,
+    void *buffer,
     uint32_t length)
 {
     _spi.beginTransaction();
@@ -141,14 +141,14 @@ void FlashDevice::read(
 
     sendAddress(address);
 
-    _spi.read((uint8_t*)buffer, length);
+    _spi.read((uint8_t *)buffer, length);
 
     _spi.endTransaction();
 }
 
 void FlashDevice::pageProgram(
     uint32_t address,
-    const void* data,
+    const void *data,
     uint16_t length)
 {
     writeEnable();
@@ -159,7 +159,7 @@ void FlashDevice::pageProgram(
 
     sendAddress(address);
 
-    _spi.write((const uint8_t*)data, length);
+    _spi.write((const uint8_t *)data, length);
 
     _spi.endTransaction();
 
@@ -260,19 +260,19 @@ void FlashDevice::sendAddress(uint32_t address)
     _spi.transfer(address & 0xFF);
 }
 
-const FlashGeometry& FlashDevice::geometry() const
+const FlashGeometry &FlashDevice::geometry() const
 {
     return _geometry;
 }
 
-void FlashDevice::detectGeometry(const JEDECID& id)
+void FlashDevice::detectGeometry(const JEDECID &id)
 {
     _geometry.capacityBytes = capacityBytes(id.capacity);
 
-    _geometry.pageSize = FLASH_PAGE_SIZE;
-    _geometry.sectorSize = FLASH_SECTOR_SIZE;
-    _geometry.block32Size = FLASH_BLOCK32_SIZE;
-    _geometry.block64Size = FLASH_BLOCK64_SIZE;
+    _geometry.pageSize = W25Q_FLASH_PAGE_SIZE;
+    _geometry.sectorSize = W25Q_FLASH_SECTOR_SIZE;
+    _geometry.block32Size = W25Q_FLASH_BLOCK32_SIZE;
+    _geometry.block64Size = W25Q_FLASH_BLOCK64_SIZE;
 
     if (_geometry.capacityBytes)
     {
