@@ -3,6 +3,52 @@
 
 #include <Arduino.h>
 
+namespace MemoryAdress
+{
+    constexpr uint32_t DEVICE_ADDRESS = 0x000010;
+    constexpr uint32_t DEVICE_TYPE = 0x000012;
+    constexpr uint32_t DEVICE_MAC_ADDRESS = 0x000014;
+
+    constexpr uint32_t DEVICE_REMARK = 0x000020;
+    constexpr uint32_t DEVICE_HARDWARE_VER = 0x000040;
+    constexpr uint32_t DEVICE_SOFTWARE_VER = 0x000060;
+
+    constexpr uint32_t CHANNEL_REMARK_BASE = 0x000080;
+    constexpr uint32_t CHANNEL_REMARK_SIZE = 0x20;
+
+    constexpr uint32_t channelRemark(uint8_t channel)
+    {
+        return (channel >= 1 && channel <= 32) ? CHANNEL_REMARK_BASE + (channel - 1) * CHANNEL_REMARK_SIZE : 0;
+    }
+
+    constexpr uint32_t CHANNEL_ENABLE = 0x000480;
+    constexpr uint32_t CHANNEL_ONDELAY = 0x0004A0;
+    constexpr uint32_t CHANNEL_ONPROTECT = 0x0004C0;
+    constexpr uint32_t CHANNEL_ZONE = 0x0004E0;
+
+    constexpr uint32_t channelAddress(uint32_t baseAddress, uint8_t channel)
+    {
+        return (channel >= 1 && channel <= 32) ? baseAddress + (channel - 1) : 0;
+    }
+
+    constexpr uint32_t ZONE_REMARK_BASE = 0x000500;
+    constexpr uint32_t ZONE_REMARK_SIZE = 0x20;
+
+    constexpr uint32_t zoneRemark(uint8_t zone)
+    {
+        return (zone >= 1 && zone <= 32) ? ZONE_REMARK_BASE + (zone - 1) * ZONE_REMARK_SIZE : 0;
+    }
+
+    // constexpr uint32_t SCENE_REMARK_BASE = 0x000500;
+    // constexpr uint32_t SCENE_REMARK_SIZE = 0x20;
+
+    // constexpr uint32_t sceneRemark(uint8_t scene)
+    // {
+    //     return (scene >= 1 && scene <= 96) ? SCENE_REMARK_BASE + (scene - 1) * SCENE_REMARK_SIZE : 0;
+    // }
+
+} // namespace memoryAdress
+
 //=============================================================================
 // JEDEC Manufacturer IDs
 //=============================================================================

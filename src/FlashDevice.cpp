@@ -130,10 +130,7 @@ void FlashDevice::writeDisable()
     _spi.endTransaction();
 }
 
-void FlashDevice::read(
-    uint32_t address,
-    void *buffer,
-    uint32_t length)
+void FlashDevice::read(uint32_t address, void *buffer, uint32_t length)
 {
     _spi.beginTransaction();
 
@@ -146,10 +143,7 @@ void FlashDevice::read(
     _spi.endTransaction();
 }
 
-void FlashDevice::pageProgram(
-    uint32_t address,
-    const void *data,
-    uint16_t length)
+void FlashDevice::pageProgram(uint32_t address, const void *data, uint16_t length)
 {
     writeEnable();
 

@@ -9,9 +9,7 @@
 class SPIBus
 {
 public:
-    SPIBus(
-        SPIClass &spi,
-        uint8_t chipSelectPin);
+    SPIBus(SPIClass &spi, uint8_t chipSelectPin);
 
     void begin();
 

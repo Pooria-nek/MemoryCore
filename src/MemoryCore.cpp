@@ -50,16 +50,17 @@ bool MemoryCore::busy()
     return _flash.busy();
 }
 
-bool MemoryCore::validRange(
-    uint32_t address,
-    uint32_t length)
+bool MemoryCore::validRange(uint32_t address, uint32_t length)
 {
 #if MEMORYCORE_ENABLE_PARAMETER_CHECK
 
     if (length == 0)
         return false;
 
-    if ((address + length) > capacity())
+    if (address >= capacity())
+        return false;
+
+    if (length > capacity() - address)
         return false;
 
 #endif
@@ -67,10 +68,7 @@ bool MemoryCore::validRange(
     return true;
 }
 
-bool MemoryCore::read(
-    uint32_t address,
-    void *buffer,
-    uint32_t length)
+bool MemoryCore::read(uint32_t address, void *buffer, uint32_t length)
 {
     if (!validRange(address, length))
         return false;
@@ -80,32 +78,22 @@ bool MemoryCore::read(
     return true;
 }
 
-bool MemoryCore::write(
-    uint32_t address,
-    const void *data,
-    uint32_t length)
+bool MemoryCore::write(uint32_t address, const void *data, uint32_t length)
 {
     if (!validRange(address, length))
         return false;
 
-    const uint8_t *src =
-        static_cast<const uint8_t *>(data);
+    const uint8_t *src = static_cast<const uint8_t *>(data);
 
     while (length)
     {
-        uint32_t pageOffset =
-            address % FLASH_PAGE_SIZE;
+        uint32_t pageOffset = address % W25Q_FLASH_PAGE_SIZE;
 
-        uint32_t remainingInPage =
-            FLASH_PAGE_SIZE - pageOffset;
+        uint32_t remainingInPage = W25Q_FLASH_PAGE_SIZE - pageOffset;
 
-        uint32_t chunk =
-            min<uint32_t>(remainingInPage, length);
+        uint32_t chunk = min<uint32_t>(remainingInPage, length);
 
-        _flash.pageProgram(
-            address,
-            src,
-            chunk);
+        _flash.pageProgram(address, src, chunk);
 
         address += chunk;
         src += chunk;
@@ -115,27 +103,7 @@ bool MemoryCore::write(
     return true;
 }
 
-bool MemoryCore::writeByte(
-    uint32_t address,
-    uint8_t value)
-{
-    return write(address, &value, 1);
-}
-
-uint8_t MemoryCore::readByte(
-    uint32_t address)
-{
-    uint8_t value = 0xFF;
-
-    read(address, &value, 1);
-
-    return value;
-}
-
-bool MemoryCore::update(
-    uint32_t address,
-    const void *data,
-    uint32_t length)
+bool MemoryCore::update(uint32_t address, const void *data, uint32_t length)
 {
     if (!validRange(address, length))
         return false;
@@ -197,10 +165,7 @@ bool MemoryCore::update(
     return true;
 }
 
-bool MemoryCore::requiresErase(
-    const uint8_t *oldData,
-    const uint8_t *newData,
-    uint32_t length)
+bool MemoryCore::requiresErase(const uint8_t *oldData, const uint8_t *newData, uint32_t length)
 {
     while (length--)
     {
@@ -215,11 +180,9 @@ bool MemoryCore::requiresErase(
     return false;
 }
 
-bool MemoryCore::eraseSector(
-    uint32_t sector)
+bool MemoryCore::eraseSector(uint32_t sector)
 {
-    uint32_t address =
-        sector * W25Q_FLASH_SECTOR_SIZE;
+    uint32_t address = sector * W25Q_FLASH_SECTOR_SIZE;
 
     if (address >= capacity())
         return false;
@@ -232,8 +195,7 @@ bool MemoryCore::eraseSector(
 bool MemoryCore::eraseBlock32K(
     uint32_t block)
 {
-    uint32_t address =
-        block * W25Q_FLASH_BLOCK32_SIZE;
+    uint32_t address = block * W25Q_FLASH_BLOCK32_SIZE;
 
     if (address >= capacity())
         return false;
@@ -246,8 +208,7 @@ bool MemoryCore::eraseBlock32K(
 bool MemoryCore::eraseBlock64K(
     uint32_t block)
 {
-    uint32_t address =
-        block * W25Q_FLASH_BLOCK64_SIZE;
+    uint32_t address = block * W25Q_FLASH_BLOCK64_SIZE;
 
     if (address >= capacity())
         return false;

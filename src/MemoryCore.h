@@ -23,28 +23,14 @@ public:
     JEDECID jedecID();
     uint64_t uniqueID();
 
-    // Read / Write
-    bool read(
-        uint32_t address,
-        void *buffer,
-        uint32_t length);
+    // Read
+    bool read(uint32_t address, void *buffer, uint32_t length);
 
-    bool write(
-        uint32_t address,
-        const void *data,
-        uint32_t length);
+    // Write
+    bool write(uint32_t address, const void *data, uint32_t length);
 
-    bool writeByte(
-        uint32_t address,
-        uint8_t value);
-
-    bool update(
-        uint32_t address,
-        const void *data,
-        uint32_t length);
-
-    uint8_t readByte(
-        uint32_t address);
+    // Update
+    bool update(uint32_t address, const void *data, uint32_t length);
 
     template <typename T>
     bool writeObject(uint32_t address, const T &object)
@@ -58,6 +44,12 @@ public:
         return read(address, &object, sizeof(T));
     }
 
+    template <typename T>
+    bool updateObject(uint32_t address, T &object)
+    {
+        return update(address, &object, sizeof(T));
+    }
+
     // Erase
     bool eraseSector(uint32_t sector);
 
@@ -69,21 +61,17 @@ public:
 
     // Status
     bool busy();
-
-private:
-    SPIBus _spi;
-    FlashDevice _flash;
-
     uint8_t _sectorBuffer[W25Q_FLASH_SECTOR_SIZE];
-
-    JEDECID _jedec;
-
     bool validRange(uint32_t address, uint32_t length);
 
-    bool requiresErase(
-        const uint8_t *oldData,
-        const uint8_t *newData,
-        uint32_t length);
+    bool requiresErase(const uint8_t *oldData, const uint8_t *newData, uint32_t length);
+    FlashDevice _flash;
+
+private:
+    // HardwareSerial &_serial;
+    SPIBus _spi;
+
+    JEDECID _jedec;
 };
 
 #endif
