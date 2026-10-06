@@ -165,6 +165,11 @@ bool MemoryCore::update(uint32_t address, const void *data, uint32_t length)
     return true;
 }
 
+uint32_t MemoryCore::findAdrress(uint32_t sectorNumber,uint32_t address)
+{
+    return (sectorNumber * 4096) + address;
+}
+
 bool MemoryCore::requiresErase(const uint8_t *oldData, const uint8_t *newData, uint32_t length)
 {
     while (length--)

@@ -32,23 +32,23 @@ public:
     // Update
     bool update(uint32_t address, const void *data, uint32_t length);
 
-    template <typename T>
-    bool writeObject(uint32_t address, const T &object)
-    {
-        return write(address, &object, sizeof(T));
-    }
+    // template <typename T>
+    // bool writeObject(uint32_t address, const T &object)
+    // {
+    //     return write(address, &object, sizeof(T));
+    // }
 
-    template <typename T>
-    bool readObject(uint32_t address, T &object)
-    {
-        return read(address, &object, sizeof(T));
-    }
+    // template <typename T>
+    // bool readObject(uint32_t address, T &object)
+    // {
+    //     return read(address, &object, sizeof(T));
+    // }
 
-    template <typename T>
-    bool updateObject(uint32_t address, T &object)
-    {
-        return update(address, &object, sizeof(T));
-    }
+    // template <typename T>
+    // bool updateObject(uint32_t address, T &object)
+    // {
+    //     return update(address, &object, sizeof(T));
+    // }
 
     // Erase
     bool eraseSector(uint32_t sector);
@@ -66,6 +66,9 @@ public:
 
     bool requiresErase(const uint8_t *oldData, const uint8_t *newData, uint32_t length);
     FlashDevice _flash;
+
+
+    uint32_t findAdrress(uint32_t sectorNumber,uint32_t address);
 
 private:
     // HardwareSerial &_serial;
