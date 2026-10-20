@@ -14,12 +14,24 @@ namespace MemoryAdress
     constexpr uint32_t DEVICE_HARDWARE_VER = 0x000040;
     constexpr uint32_t DEVICE_SOFTWARE_VER = 0x000060;
 
-    constexpr uint32_t CHANNEL_REMARK_BASE = 0x000080;
+    constexpr uint32_t CHANNEL_REMARK = 0x000080;
     constexpr uint32_t CHANNEL_REMARK_SIZE = 0x20;
 
     constexpr uint32_t channelRemark(uint8_t channel)
     {
-        return (channel >= 1 && channel <= 32) ? CHANNEL_REMARK_BASE + (channel - 1) * CHANNEL_REMARK_SIZE : 0;
+        return (channel >= 1 && channel <= 32) ? CHANNEL_REMARK + (channel - 1) * CHANNEL_REMARK_SIZE : 0;
+    }
+
+    // base 1 to 32 same in all devices
+    constexpr uint32_t setRemark(uint32_t remarkBase, uint8_t number)
+    {
+        return (number >= 1 && number <= 32) ? remarkBase + (number - 1) * remarkBase : 0;
+    }
+
+    // addreses are the same in all devices
+    constexpr uint32_t channelAddress(uint32_t baseAddress, uint8_t channel)
+    {
+        return (channel >= 1 && channel <= 32) ? baseAddress + (channel - 1) : 0;
     }
 
     namespace Touch
@@ -107,14 +119,14 @@ namespace MemoryAdress
 
         //////////////////////////////////////////////////////////////////
 
-        constexpr uint32_t HVAC_0 = 0x000532;
-        constexpr uint32_t HVAC_1 = 0x000540;
-        constexpr uint32_t HVAC_2 = 0x000560;
-        constexpr uint32_t HVAC_3 = 0x000580;
-        constexpr uint32_t HVAC_4 = 0x0005A0;
-        constexpr uint32_t HVAC_5 = 0x0005C0;
-        constexpr uint32_t HVAC_6 = 0x0005D0;
-        constexpr uint32_t HVAC_7 = 0x000600;
+        constexpr uint32_t HVAC_0 = 0x000540;
+        constexpr uint32_t HVAC_1 = 0x0005A0;
+        constexpr uint32_t HVAC_2 = 0x000600;
+        constexpr uint32_t HVAC_3 = 0x000660;
+        constexpr uint32_t HVAC_4 = 0x0006C0;
+        constexpr uint32_t HVAC_5 = 0x000720;
+        constexpr uint32_t HVAC_6 = 0x000780;
+        constexpr uint32_t HVAC_7 = 0x0007E0;
 
         static constexpr uint32_t HVAC_ADDRESSES[8] =
             {
@@ -128,14 +140,15 @@ namespace MemoryAdress
                 MemoryAdress::Touch::HVAC_7};
 
         // 64x32, 1-bit = 256 bytes = 0x100
-        constexpr uint32_t IMAGE_0 = 0x000090;
-        constexpr uint32_t IMAGE_1 = 0x000190;
-        constexpr uint32_t IMAGE_2 = 0x000290;
-        constexpr uint32_t IMAGE_3 = 0x000390;
-        constexpr uint32_t IMAGE_4 = 0x000490;
-        constexpr uint32_t IMAGE_5 = 0x000590;
-        constexpr uint32_t IMAGE_6 = 0x000690;
-        constexpr uint32_t IMAGE_7 = 0x000790;
+
+        constexpr uint32_t IMAGE_0 = 0x000000;
+        constexpr uint32_t IMAGE_1 = 0x0000F0;
+        constexpr uint32_t IMAGE_2 = 0x0001E0;
+        constexpr uint32_t IMAGE_3 = 0x0002D0;
+        constexpr uint32_t IMAGE_4 = 0x000400;
+        constexpr uint32_t IMAGE_5 = 0x0004F0;
+        constexpr uint32_t IMAGE_6 = 0x0005E0;
+        constexpr uint32_t IMAGE_7 = 0x0006D0;
 
         static constexpr uint32_t HVAC_IMAGE[8] =
             {
@@ -150,48 +163,43 @@ namespace MemoryAdress
 
     } // namespace Touch
 
-    namespace Relay
-    {
-        // =====================================================
-        // Sectors
-        // =====================================================
+    // namespace Relay
+    // {
+    //     // =====================================================
+    //     // Sectors
+    //     // =====================================================
 
-        constexpr uint32_t SECTOR_INFO = 60;
+    //     constexpr uint32_t SECTOR_DEVICE_INFO = 60;
 
-        //////////////////////////////////////////////////////////////////
+    //     //////////////////////////////////////////////////////////////////
 
-        constexpr uint32_t CHANNEL_ENABLE = 0x000480;
-        constexpr uint32_t CHANNEL_ONDELAY = 0x0004A0;
-        constexpr uint32_t CHANNEL_ONPROTECT = 0x0004C0;
+    //     constexpr uint32_t CHANNEL_ENABLE = 0x000380;
+    //     constexpr uint32_t CHANNEL_ONDELAY = 0x0003A0;
+    //     constexpr uint32_t CHANNEL_ONPROTECT = 0x0003C0;
+    //             constexpr uint32_t CHANNEL_ZONE = 0x0003E0;
 
-        constexpr uint32_t CHANNEL_ZONE = 0x0004E0;
-    } // namespace Relay
+    //     // for values that has 1 byte per channel
+    //     constexpr uint32_t channelAddress(uint32_t baseAddress, uint8_t channel)
+    //     {
+    //         return (channel >= 1 && channel <= 32) ? baseAddress + (channel - 1) : 0;
+    //     }
+
+    //     constexpr uint32_t CHANNEL_ZONE = 0x0003E0;
+    //     // constexpr uint32_t ZONE_SCENE_POWERON_EN = 0x000400;
+    //     // constexpr uint32_t ZONE_SCENE_POWERON_NUM = 0x000420;
+
+    //     // constexpr uint32_t ZONE_REMARK = 0x000440;
+    //     // constexpr uint32_t ZONE_REMARK_SIZE = 0x20;
+
+    //     // // constexpr uint32_t SCENE_REMARK = 0x000440;
+    //     // constexpr uint32_t SCENE_REMARK_SIZE = 0x20;
+
+    // } // namespace Relay
 
     namespace Input
     {
 
     } // namespace Input
-
-    constexpr uint32_t channelAddress(uint32_t baseAddress, uint8_t channel)
-    {
-        return (channel >= 1 && channel <= 32) ? baseAddress + (channel - 1) : 0;
-    }
-
-    constexpr uint32_t ZONE_REMARK_BASE = 0x000580;
-    constexpr uint32_t ZONE_REMARK_SIZE = 0x20;
-
-    constexpr uint32_t zoneRemark(uint8_t zone)
-    {
-        return (zone >= 1 && zone <= 32) ? ZONE_REMARK_BASE + (zone - 1) * ZONE_REMARK_SIZE : 0;
-    }
-
-    // constexpr uint32_t SCENE_REMARK_BASE = 0x000500;
-    // constexpr uint32_t SCENE_REMARK_SIZE = 0x20;
-
-    // constexpr uint32_t sceneRemark(uint8_t scene)
-    // {
-    //     return (scene >= 1 && scene <= 96) ? SCENE_REMARK_BASE + (scene - 1) * SCENE_REMARK_SIZE : 0;
-    // }
 
 } // namespace memoryAdress
 
