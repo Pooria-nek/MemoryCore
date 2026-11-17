@@ -161,6 +161,34 @@ namespace MemoryAdress
                 MemoryAdress::Touch::IMAGE_6,
                 MemoryAdress::Touch::IMAGE_7};
 
+        //////////////////////////////////////////////////////////////////
+
+        constexpr uint32_t FHEAT_0 = 0x000540;
+        constexpr uint32_t FHEAT_1 = 0x0005A0;
+        constexpr uint32_t FHEAT_2 = 0x000600;
+        constexpr uint32_t FHEAT_3 = 0x000660;
+
+        static constexpr uint32_t FHEAT_ADDRESSES[4] =
+            {
+                MemoryAdress::Touch::FHEAT_0,
+                MemoryAdress::Touch::FHEAT_1,
+                MemoryAdress::Touch::FHEAT_2,
+                MemoryAdress::Touch::FHEAT_3};
+
+        // 64x32, 1-bit = 256 bytes = 0x100
+
+        constexpr uint32_t FIMAGE_0 = 0x000800;
+        constexpr uint32_t FIMAGE_1 = 0x0008F0;
+        constexpr uint32_t FIMAGE_2 = 0x0009E0;
+        constexpr uint32_t FIMAGE_3 = 0x000AD0;
+
+        static constexpr uint32_t FHEAT_IMAGE[4] =
+            {
+                MemoryAdress::Touch::FIMAGE_0,
+                MemoryAdress::Touch::FIMAGE_1,
+                MemoryAdress::Touch::FIMAGE_2,
+                MemoryAdress::Touch::FIMAGE_3};
+
     } // namespace Touch
 
     // namespace Relay
