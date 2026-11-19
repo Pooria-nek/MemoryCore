@@ -117,6 +117,8 @@ namespace MemoryAdress
         constexpr uint32_t PAGE_LCD_DIMM = 0x000518;    // 1 LEN
         constexpr uint32_t PAGE_BUTTON_DIMM = 0x000519; // 1 LEN
 
+        constexpr uint32_t TEMP_CALIBRATE = 0x00051A; // 1 LEN
+
         //////////////////////////////////////////////////////////////////
 
         constexpr uint32_t HVAC_0 = 0x000540;
